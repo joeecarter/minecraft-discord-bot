@@ -1,5 +1,6 @@
 import os
 import time
+import requests
 from mcstatus import MinecraftServer
 
 hostname = os.environ.get('MINECRAFT_HOSTNAME')
@@ -9,6 +10,8 @@ if hostname == None:
 	os._exit(0)
 
 server = MinecraftServer(hostname)
+
+discordWebhook = os.environ.get('DISCORD_WEBHOOK')
 
 def fetch_online_players():
 	status = server.status()
@@ -26,6 +29,12 @@ def diff(original, changed):
 			diff.append(x)
 	return diff
 
+def discordMessage(message):
+	if discordWebhook == None:
+		return
+	requests.post(discordWebhook, { 'username': 'MC Status', 'content': message })	
+
+
 players = fetch_online_players()
 
 while True:
@@ -38,7 +47,11 @@ while True:
 	players = newPlayers
 
 	for player in joined:
-		print('{0} joined the server'.format(player))
+		msg = '{0} joined the server'.format(player)
+		print(msg)
+		discordMessage(msg)
 
 	for player in left:
-		print('{0} left the server'.format(player))
+		msg = '{0} left the server'.format(player)
+		print(msg)
+		discordMessage(msg)
