@@ -1,6 +1,7 @@
 import os
 import time
 import requests
+from datetime import datetime
 from mcstatus import MinecraftServer
 
 hostname = os.environ.get('MINECRAFT_HOSTNAME')
@@ -29,6 +30,10 @@ def diff(original, changed):
 			diff.append(x)
 	return diff
 
+def logMessage(message):
+	now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+	print('[{0}] {1}'.format(now, message))
+
 def discordMessage(message):
 	if discordWebhook == None:
 		return
@@ -48,10 +53,10 @@ while True:
 
 	for player in joined:
 		msg = '{0} joined the server'.format(player)
-		print(msg)
+		logMessage(msg)
 		discordMessage(msg)
 
 	for player in left:
 		msg = '{0} left the server'.format(player)
-		print(msg)
+		logMessage(msg)
 		discordMessage(msg)
