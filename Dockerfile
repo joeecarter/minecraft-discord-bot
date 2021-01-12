@@ -1,10 +1,10 @@
 FROM python:3.8
 
-WORKDIR /usr/src/po3-server-discord-bot
+WORKDIR /minecraft-discord-bot
 
+COPY ./discordbot ./discordbot
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY main.py .
-
-CMD [ "python", "-u", "./main.py" ]
+ENV PYTHONPATH=/minecraft-discord-bot
+CMD [ "python", "-u", "./discordbot/main.py" ]
