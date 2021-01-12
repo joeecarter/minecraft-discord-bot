@@ -37,15 +37,23 @@ class DiscordBot(discord.Client):
 
         print(f'Leave/join messages will be posted to #{self.channel.name}')
         self.__init_players()
+        await self.__update_presence()
 
     async def on_player_join(self, player):
         await self.channel.send(f'{player} joined the server')
+        await self.__update_presence()
 
     async def on_player_leave(self, player):
         await self.channel.send(f'{player} left the server')
+        await self.__update_presence()
 
     def find_channel(self, name):
         return discord.utils.find(lambda channel: channel.name == name, self.guild.channels)
+
+    async def __update_presence(self):
+        players = self.players.get()
+        game = discord.Game(f'{len(players)} players online')
+        await self.change_presence(activity=game)
 
     async def __print_guild_id_prompt(self):
         print('The value of the GUILD_ID environment variable is missing or invalid.')
