@@ -17,7 +17,7 @@ class MinecraftServerPlayers(Thread):
         print('[MinecraftServerPlayers] Starting player leave/join loop')
 
         while True:
-            time.sleep(5)
+            time.sleep(60)
 
             with self.__lock:
                 new_players = self.__fetch_online_players()
