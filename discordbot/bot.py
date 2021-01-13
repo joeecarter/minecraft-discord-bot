@@ -4,10 +4,7 @@ import sys
 import discord
 from discord.ext import commands
 from discordbot.mcplayers import MinecraftServerPlayers
-
-# TODO: Commands...
-# from discord.ext import commands
-# bot = commands.Bot(command_prefix='$')
+from discordbot.command import MinecraftCommand
 
 
 class DiscordBot(commands.Bot):
@@ -20,7 +17,10 @@ class DiscordBot(commands.Bot):
         self.guild = None
         self.channel = None
 
-        self.add_command(self.on_minecraft_command)
+        self.add_cog(MinecraftCommand(players))
+
+    async def on_message(self, message):
+        await self.process_commands(message)
 
     async def on_ready(self):
         guild_id = self.load_guild_id()
@@ -45,34 +45,20 @@ class DiscordBot(commands.Bot):
 
         print(f'Leave/join messages will be posted to #{self.channel.name}')
         self.__init_players()
-        await self.__update_presence()
-
+        await self.update_presence()
 
     async def on_player_join(self, player):
         await self.channel.send(f'{player} joined the server')
-        await self.__update_presence()
+        await self.update_presence()
 
     async def on_player_leave(self, player):
         await self.channel.send(f'{player} left the server')
-        await self.__update_presence()
-
-    @staticmethod
-    @commands.command(name='minecraft', help='Collection of commands for interacting with the minecraft server. Use !minecraft help for more info.')
-    async def on_minecraft_command(ctx, sub_command):
-        if sub_command == 'help':
-            await ctx.send('Available commands:')
-            await ctx.send('* !minecraft hello:  Say hello to your friendly neighbourhood bot!')
-        elif sub_command == 'hello':
-            await ctx.send('Hello there :wave:')
-        elif sub_command == 'restart':
-            await ctx.send('WIP')
-        else:
-            await ctx.send(f'Unknown sub-command \'{sub_command}\', type !minecraft help for a list of available subcommands.')
+        await self.update_presence()
 
     def find_channel(self, name):
         return discord.utils.find(lambda channel: channel.name == name, self.guild.channels)
 
-    async def __update_presence(self):
+    async def update_presence(self):
         players = self.players.get()
         game = discord.Game(f'{len(players)} players online')
         await self.change_presence(activity=game)
