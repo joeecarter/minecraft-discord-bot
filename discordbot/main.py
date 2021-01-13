@@ -1,8 +1,5 @@
-import asyncio
 import os
 import sys
-import bot
-
 from discordbot.mcplayers import MinecraftServerPlayers
 from discordbot.bot import DiscordBot
 
@@ -22,6 +19,5 @@ if MINECRAFT_HOSTNAME is None:
 players = MinecraftServerPlayers(MINECRAFT_HOSTNAME)
 players.start()
 
-client = DiscordBot(players=players)
-
-client.run(DISCORD_BOT_TOKEN)
+bot = DiscordBot(players=players)
+bot.run(DISCORD_BOT_TOKEN)

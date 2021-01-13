@@ -23,7 +23,6 @@ class MinecraftServerPlayers(Thread):
                 new_players = self.__fetch_online_players()
                 left = diff(self.players, new_players)
                 joined = diff(new_players, self.players)
-
                 self.players = new_players
 
             for player in joined:
