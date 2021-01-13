@@ -9,7 +9,7 @@ from discordbot.command import MinecraftCommand
 
 class DiscordBot(commands.Bot):
 
-    def __init__(self, players: MinecraftServerPlayers):
+    def __init__(self, players, server):
         self.loop = asyncio.get_event_loop()
         super(DiscordBot, self).__init__(loop=self.loop, status=discord.Status.online, command_prefix="!")
 
@@ -17,7 +17,7 @@ class DiscordBot(commands.Bot):
         self.guild = None
         self.channel = None
 
-        self.add_cog(MinecraftCommand(players))
+        self.add_cog(MinecraftCommand(players, server))
 
     async def on_message(self, message):
         await self.process_commands(message)

@@ -1,6 +1,7 @@
 import os
 import sys
 from discordbot.mcplayers import MinecraftServerPlayers
+from discordbot.server import MinecraftServerContainer
 from discordbot.bot import DiscordBot
 
 
@@ -19,5 +20,7 @@ if MINECRAFT_HOSTNAME is None:
 players = MinecraftServerPlayers(MINECRAFT_HOSTNAME)
 players.start()
 
-bot = DiscordBot(players=players)
+server = MinecraftServerContainer()
+
+bot = DiscordBot(players=players, server=server)
 bot.run(DISCORD_BOT_TOKEN)

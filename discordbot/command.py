@@ -3,8 +3,9 @@ from discord.ext import commands
 
 class MinecraftCommand(commands.Cog):
 
-    def __init__(self, players):
+    def __init__(self, players, server):
         self.players = players
+        self.server = server
 
     @commands.group(pass_context=True)
     async def minecraft(self, ctx):
@@ -21,3 +22,14 @@ class MinecraftCommand(commands.Cog):
             await ctx.send('Online players: ' + ', '.join(players))
         else:
             await ctx.send('No players are online')
+
+    @minecraft.command(help='Says something in game')
+    async def say(self, ctx):
+        text = remove_prefix(ctx.message.content, '!minecraft say')
+        self.server.say(text.strip())
+
+
+def remove_prefix(text, prefix):
+    if text.startswith(prefix):
+        return text[len(prefix):]
+    return text
