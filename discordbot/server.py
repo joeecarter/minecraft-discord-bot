@@ -14,7 +14,10 @@ class MinecraftServerContainer:
         self.container.restart()
 
     def start_backup(self):
-        self.command(f'backup start')
+        self.command('backup start')
+
+    def whitelist_add(self, username):
+        self.command(f'whitelist add {username}')
 
     def command(self, cmd):
         sock = self.container.attach_socket(params={"stdin": 1, "stdout": 1, "stderr": 1, "stream": 1})

@@ -11,6 +11,11 @@ class MinecraftCommand(commands.Cog):
     async def minecraft(self, ctx):
         pass
 
+    # TODO: Unfortunately I couldn't get the built in help command to work with @commands.group, probably something super simple
+    @minecraft.command(help='Prints out the available commands')
+    async def help(self, ctx):
+        await ctx.send('Available commands: hello, players, say <message>, backup, restart, whitelist')
+
     @minecraft.command(help='Says hello to you')
     async def hello(self, ctx):
         await ctx.send('Hello there :wave:')
@@ -37,6 +42,10 @@ class MinecraftCommand(commands.Cog):
     async def restart(self, ctx):
         self.server.restart_server()
         await ctx.send('Server has been restarted, please give it some time to startup before trying to join.')
+
+    @minecraft.command(help='Adds a username to the whitelist')
+    async def whitelist(self, ctx, username):
+        self.server.whitelist_add(username)
 
 
 def remove_prefix(text, prefix):
