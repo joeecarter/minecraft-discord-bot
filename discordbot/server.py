@@ -29,7 +29,12 @@ class MinecraftServerContainer:
                 written = sock.write(str)
                 str = str[written:]
 
+        # Clean out any new lines to stop arbitrary command injection
+        cmd = cmd.replace('\n', ' ')
+
+        # Press enter at the end of the command
         cmd = cmd + '\n'
+
         write(sock, bytes(cmd, encoding='utf-8'))
         # TODO: Read from the socket and return the command output
         sock.close()
