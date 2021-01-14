@@ -10,6 +10,12 @@ class MinecraftServerContainer:
     def say(self, text):
         self.command(f'say {text}')
 
+    def restart_server(self):
+        self.container.restart()
+
+    def start_backup(self):
+        self.command(f'backup start')
+
     def command(self, cmd):
         sock = self.container.attach_socket(params={"stdin": 1, "stdout": 1, "stderr": 1, "stream": 1})
 

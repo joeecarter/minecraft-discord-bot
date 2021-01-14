@@ -1,5 +1,5 @@
 # Minecraft Discord Bot
-Small discord bot that is compatible with any minecraft server.
+Discord bot for a private docker hosted minecraft server.
 
 This currently isn't hosted publicly so you'll need to host it yourself, the bot is designed to work with a single discord server.
 
