@@ -1,7 +1,7 @@
 import os
 import sys
 from discordbot.mcplayers import MinecraftServerPlayers
-from discordbot.server import MinecraftServerContainer
+from discordbot.mcserver import MinecraftServerContainer
 from discordbot.bot import DiscordBot
 
 

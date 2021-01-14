@@ -1,10 +1,11 @@
 import asyncio
 import os
 import sys
+import time
 import discord
 from discord.ext import commands
-from discordbot.mcplayers import MinecraftServerPlayers
 from discordbot.command import MinecraftCommand
+from signal import SIGINT, SIGTERM
 
 
 class DiscordBot(commands.Bot):
@@ -44,7 +45,8 @@ class DiscordBot(commands.Bot):
             sys.exit(1)
 
         print(f'Leave/join messages will be posted to #{self.channel.name}')
-        self.__init_players()
+        self.__init_player_events()
+        self.__init_signal_handler_events()
         await self.update_presence()
 
     async def on_player_join(self, player):
@@ -54,6 +56,17 @@ class DiscordBot(commands.Bot):
     async def on_player_leave(self, player):
         await self.channel.send(f'{player} left the server')
         await self.update_presence()
+
+    def on_stop_signal(self):
+        self.send_message_sync('Bot is being redeployed (or something has gone very wrong)')
+        time.sleep(1)
+        sys.exit(0)
+
+    async def send_message(self, message):
+        await self.channel.send(message)
+
+    def send_message_sync(self, message):
+        self.loop.create_task(self.send_message(message))
 
     def find_channel(self, name):
         return discord.utils.find(lambda channel: channel.name == name, self.guild.channels)
@@ -72,7 +85,7 @@ class DiscordBot(commands.Bot):
         self.clear()
         await self.close()
 
-    def __init_players(self):
+    def __init_player_events(self):
         loop = self.loop
 
         def player_join(player):
@@ -84,10 +97,14 @@ class DiscordBot(commands.Bot):
         self.players.on_player_join(player_join)
         self.players.on_player_leave(player_leave)
 
+    def __init_signal_handler_events(self):
+        self.loop.add_signal_handler(SIGINT, self.on_stop_signal)
+        self.loop.add_signal_handler(SIGTERM, self.on_stop_signal)
+
     @staticmethod
     def load_channel_name():
         channel_name = os.getenv('CHANNEL_NAME')
-        if channel_name is None:  # TODO: This sucks...
+        if channel_name is None:
             print('Missing CHANNEL_NAME environment variable.')
             sys.exit(2)
         return channel_name
@@ -95,7 +112,7 @@ class DiscordBot(commands.Bot):
     @staticmethod
     def load_guild_id():
         guild_id = int(os.getenv('GUILD_ID')) if os.getenv('GUILD_ID') else None
-        if guild_id is None:  # TODO: This sucks...
+        if guild_id is None:
             print('Missing GUILD_ID environment variable.')
             sys.exit(2)
         return guild_id

@@ -41,5 +41,10 @@ class MinecraftServerContainer:
 
 
 def find_container_by_name(docker_client, name):
-    containers = docker_client.containers.list()
-    return next(filter(lambda container: container.name == name, containers))
+    all_containers = docker_client.containers.list()
+    filtered_containers = list(filter(lambda container: container.name == name, all_containers))
+
+    if len(filtered_containers) == 0:
+        return None
+    else:
+        return filtered_containers[0]

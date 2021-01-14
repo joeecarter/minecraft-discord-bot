@@ -47,13 +47,18 @@ class MinecraftServerPlayers(Thread):
         self.callback_leave = callback
 
     def __fetch_online_players(self):
-        status = self.server.status()
-        players = status.players.sample
+        try:
+            status = self.server.status()
+            players = status.players.sample
 
-        if players is None:
+            if players is None:
+                return []
+
+            return list(map(lambda player: player.name, players))
+        except Exception as exception:
+            print('Failed to fetch the online players, assuming the server crashed and everyone was kicked.')
+            print(str(exception))
             return []
-
-        return list(map(lambda player: player.name, players))
 
 
 def diff(original, changed):
