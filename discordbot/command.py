@@ -46,6 +46,8 @@ class MinecraftCommand(commands.Cog):
     @minecraft.command(help='Adds a username to the whitelist')
     async def whitelist(self, ctx, username):
         self.server.whitelist_add(username)
+        await ctx.send(f'Added \'{username}\' to the whitelist')
+
 
 
 def remove_prefix(text, prefix):
