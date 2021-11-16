@@ -3,9 +3,9 @@ from discord.ext import commands
 
 class MinecraftCommand(commands.Cog):
 
-    def __init__(self, players, server):
+    def __init__(self, players, container):
         self.players = players
-        self.server = server
+        self.container = container
 
     @commands.group(pass_context=True)
     async def minecraft(self, ctx):
@@ -31,21 +31,21 @@ class MinecraftCommand(commands.Cog):
     @minecraft.command(help='Says something in game')
     async def say(self, ctx):
         text = remove_prefix(ctx.message.content, '!minecraft say')
-        self.server.say(text.strip())
+        self.container.say(text.strip())
 
     @minecraft.command(help='Starts a server backup')
     async def backup(self, ctx):
-        self.server.start_backup()
+        self.container.start_backup()
         await ctx.send('Backup successfully requested')
 
     @minecraft.command(help='Restarts the server')
     async def restart(self, ctx):
-        self.server.restart_server()
+        self.container.restart_server()
         await ctx.send('Server has been restarted, please give it some time to startup before trying to join.')
 
     @minecraft.command(help='Adds a username to the whitelist')
     async def whitelist(self, ctx, username):
-        self.server.whitelist_add(username)
+        self.container.whitelist_add(username)
         await ctx.send(f'Added \'{username}\' to the whitelist')
 
 

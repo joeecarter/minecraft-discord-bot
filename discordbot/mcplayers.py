@@ -5,9 +5,9 @@ from mcstatus import MinecraftServer
 
 class MinecraftServerPlayers(Thread):
 
-    def __init__(self, hostname):
+    def __init__(self, hostname, port):
         super(MinecraftServerPlayers, self).__init__(daemon=True)
-        self.server = MinecraftServer(hostname)
+        self.server = MinecraftServer(hostname, port)
         self.players = self.__fetch_online_players()
         self.callback_join = None
         self.callback_leave = None
